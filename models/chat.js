@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const message = require('./message');
+
 // For inheritance
 const options = { discriminatorKey: 'kind' };
 
@@ -9,19 +11,18 @@ const options = { discriminatorKey: 'kind' };
  * Chat Schema
  */
 const ChatSchema = new mongoose.Schema({
-    messages: [Message],
-    users: [ObjectId],              // User
-    blockedUsers: [ObjectId]        // User
+    messages: [message.MessageSchema],
+    users: [mongoose.ObjectId],              // User
+    blockedUsers: [mongoose.ObjectId]        // User
 });
 
 /**
  * Messagin Group Schema
  */
 const MessagingGroupSchema = new mongoose.Schema({
-    event: { type: ObjectId, required: true },       // Event
-    onlyAdminMessages: { type: Boolean, required: true },
-    options
-});
+    event: { type: mongoose.ObjectId, required: true },       // Event
+    onlyAdminMessages: { type: Boolean, required: true }
+}, options);
 
 /// METHODS ///
 

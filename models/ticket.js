@@ -6,8 +6,8 @@ const mongoose = require('mongoose');
  * Ticket Schema
  */
 const TicketSchema = new mongoose.Schema({
-    user: { type: ObjectId, required: true },       // Personal
-    event: { type: ObjectId, required: true },      // Event
+    user: { type: mongoose.ObjectId, required: true },       // Personal
+    event: { type: mongoose.ObjectId, required: true },      // Event
     checked: { type: Boolean, required: false },
     visibility: { type: String, required: true }
 });

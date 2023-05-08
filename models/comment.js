@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
  * Comment Schema
  */
 const CommentSchema = new mongoose.Schema({
-    user: { type: ObjectId, required: true },       // User
+    user: { type: mongoose.ObjectId, required: true },       // User
     date: { type: Date, required: true },
     text: { type: String, required: true }
 });

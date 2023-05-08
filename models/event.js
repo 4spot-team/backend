@@ -15,15 +15,15 @@ const options = { discriminatorKey: 'kind' };
  */
 const EventSchema = new mongoose.Schema({
     title: { type: String, required: true },
-    organiser: { type: ObjectId, required: true },  // User
-    tickets: [ObjectId],                            // Ticket
-    types: { type: [ObjectId], required: true },      // EventType
+    organiser: { type: mongoose.ObjectId, required: true },  // User
+    tickets: [mongoose.ObjectId],                            // Ticket
+    types: { type: [mongoose.ObjectId], required: true },      // EventType
     location: { type: location.LocationSchema, required: true },
     date: { type: Date, required: true },
     noUnderage: { type: Boolean, required: true },
     hasQR: { type: Boolean, required: true },
     price: currency.CurrencySchema,
-    messagingGroup: ObjectId,       // Messaging Group
+    messagingGroup: mongoose.ObjectId,       // Messaging Group
     hashtags: [String],
     description: String,
     numOfSpots: Number,
@@ -36,17 +36,14 @@ const EventSchema = new mongoose.Schema({
 /**
  * Request Event Schema
  */
-const RequestEventSchema = new mongoose.Schema({
-    options
-});
+const RequestEventSchema = new mongoose.Schema({}, options);
 
 /**
  * Private Event Schema
  */
 const PrivateEventSchema = new mongoose.Schema({
-    invitations: [ObjectId],     // Personal
-    options
-});
+    invitations: [mongoose.ObjectId],     // Personal
+}, options);
 
 /// METHODS ///
 

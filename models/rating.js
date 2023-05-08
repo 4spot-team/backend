@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
  * Rating Schema
  */
 const RatingSchema = new mongoose.Schema({
-    user: { type: ObjectId, required: true },       // User
+    user: { type: mongoose.ObjectId, required: true },       // User
     rating: { type: Number, required: true }
 });
 

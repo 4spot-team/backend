@@ -10,26 +10,24 @@ const options = { discriminatorKey: 'kind' };
  */
 const NotificationSchema = new mongoose.Schema({
     date: { type: Date, required: true },
-    text: { type: String, required: true }, 
+    text: { type: String, required: true }
 });
 
 /**
  * Invitation Schema
  */
 const InvitationSchema = new mongoose.Schema({
-    event: { type: ObjectId, required: true },
-    accepted: { type: Boolean, require: true },
-    options
-});
+    event: { type: mongoose.ObjectId, required: true },
+    accepted: { type: Boolean, require: true }
+}, options);
 
 /**
  * Join Request Schema
  */
 const JoinRequestSchema = new mongoose.Schema({
-    event: { type: ObjectId, required: true },
+    event: { type: mongoose.ObjectId, required: true },
     accepted: { type: Boolean, require: true },
-    options
-});
+}, options);
 
 
 /// METHODS ///

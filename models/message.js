@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
  * Message Schema
  */
 const MessageSchema = new mongoose.Schema({
-    user: { type: ObjectId, required: true },
+    user: { type: mongoose.ObjectId, required: true },
     date: { type: Date, required: true },
     text: { type: String, required: true }
 });
