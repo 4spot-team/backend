@@ -46,7 +46,6 @@ const PersonalSchema = new mongoose.Schema({
  * Business
  */
 const BusinessSchema = new mongoose.Schema({
-    dateOfBirth: Date,
     preferences: [mongoose.ObjectId],    // SuperEventType
     defaultPaymentMethod: mongoose.ObjectId,     // CreditCard
     defaultCreditCard: mongoose.ObjectId,        // CreditMethod
