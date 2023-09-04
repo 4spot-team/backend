@@ -17,10 +17,13 @@ const options = { discriminatorKey: 'kind' };
 const StakeholderSchema = new mongoose.Schema({
     username: { type: String, required: true },
     email: { type: String, required: true },
+    /*
     hashPass: { type: Number, required: true },
     salt: { type: String, required: true },
     cookie: String,         // TODO: to decide whether use it or tokens
     notifications: [mongoose.ObjectId]      // Notification
+    */
+    hashPass: {type: String, required: true },
 });
 
 
@@ -92,4 +95,7 @@ const Business = Stakeholder.discriminator('Business', BusinessSchema);
 
 /// EXPORTS ///
 
+module.exports = Stakeholder;
+/*
 module.exports = { Stakeholder, Supervisor, Personal, Business };
+*/
