@@ -7,24 +7,24 @@ const recoveryController = require("../controllers/recover");
 
 const apiVersion = process.env.API_VERSION || 'v1';
 
-// POST '/api/${apiVersion}/recover'
+// POST `/api/${apiVersion}/recover`
 // Password recovery request route
 router.post(
-    '/api/${apiVersion}/recover', 
-    recoverController.requestPasswordReset
+    `/api/${apiVersion}/recover`, 
+    recoverController.getRecoveryToken
 );
 
-// GET '/api/${apiVersion}/recover/:token'
+// GET `/api/${apiVersion}/recover/:token`
 // Password reset route with token verification
 router.get(
-    '/api/${apiVersion}/recover/:token', 
-    recoverController.verifyPasswordResetToken
+    `/api/${apiVersion}/recover/:token`, 
+    recoverController.verifyToken
 );
 
-// POST '/api/${apiVersion}/recover/:token'
+// POST `/api/${apiVersion}/recover/:token`
 // Password reset form submission route
 router.post(
-    '/api/${apiVersion}/recover/:token', 
+    `/api/${apiVersion}/recover/:token`, 
     recoverController.resetPassword
 );
 
