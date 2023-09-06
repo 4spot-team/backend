@@ -6,7 +6,7 @@ const errorHandler = require('./middleware/errorHandler');
 const homeRoute = require("./routes/home");
 const loginRoute = require("./routes/login");
 const signupRoute = require("./routes/signup");
-const privacyRoute = require("./routes/privacy");
+const termsAcceptanceRoute = require("./routes/acceptTerms");
 const eventCreationRoute = require("./routes/addevent");
 const settingsRoute = require("./routes/settings");
 const recoveryRoute = require("./routes/recover");
@@ -35,7 +35,7 @@ app.use(express.urlencoded({ extended: false })); // Parse URL-encoded requests
 app.use('/', homeRoute);
 app.use('/', loginRoute);
 app.use('/', signupRoute);
-app.use('/', privacyRoute);
+app.use('/', termsAcceptanceRoute);
 app.use('/', eventCreationRoute);
 app.use('/', settingsRoute);
 app.use('/', recoveryRoute);
