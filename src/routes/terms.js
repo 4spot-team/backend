@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require("express");
 
 const router = express.Router();
-const { acceptTerms } = require('../controllers/acceptTerms');
+const { acceptTerms } = require('../controllers/terms');
 const { checkToken } = require('../middleware/token');
 
 const apiVersion = process.env.API_VERSION || 'v1';
