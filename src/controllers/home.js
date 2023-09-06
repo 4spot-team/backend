@@ -28,18 +28,44 @@ async function getHomeFeed(req, res) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error" });
     }
-};
+}
 
 
 
 // POST '/api/${apiVersion}/home'
-const postHomePage = (req, res, next) => {
-    // TODO this is a placeholder
-    res.json({"message": "POST home page"});
-};
+async function filterEventsByQuery(req, res) {
+    try {
+        const { query } = req.body;
+        // Provided by checkToken middleware function
+        const { username } = req;
+
+        const user = await Stakeholder.findOne(username);
+        const following = user.following;
+
+        // TODO evaluate event score value (as in the GET request controller)
+        // get list of events created by users in following list
+        //   and whose title matches the query provided in the POST request
+        const events = await Event.find({
+            organiser: { $in: following },
+            // 'i' for case insensitive string matching
+            title: { $regex: new RegExp(query, 'i') },
+        }).limit(10);
+
+        const response = {
+            success: true,
+            message: 'Home filtered feed retrieved successfully',
+            events: events,
+        };
+
+        return res.status(200).json(response);
+    } catch(error) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
 
 
 module.exports = {
     getHomeFeed, 
-    postHomePage
+    filterEventsByQuery,
 };

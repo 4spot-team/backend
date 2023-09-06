@@ -7,7 +7,7 @@ const { checkToken } = require('../middleware/token');
 const { checkTermsAcceptance } = require('../middleware/terms');
 const {
     getHomeFeed,
-    postHomePage,
+    filterEventsByQuery,
 } = require('../controllers/home');
 
 const apiVersion = process.env.API_VERSION || 'v1';
@@ -22,7 +22,6 @@ router.get(
     getHomeFeed
 );
 
-/*
 // POST `/api/${apiVersion}/home`
 router.post(
     `/api/${apiVersion}/home`, 
@@ -30,9 +29,8 @@ router.post(
         checkToken, 
         checkTermsAcceptance
     ],
-    postHomePage
+    filterEventsByQuery
 );
-*/
 
 module.exports = router;
 
