@@ -16,6 +16,11 @@ const StakeholderSchema = new mongoose.Schema({
     notifications: [mongoose.ObjectId]
     hashPass: {type: String, required: true },
     hasAcceptedTerms: {type: Boolean, default: false},
+    // the next ones should be fields of the inherited schemas
+    // they are here only to make things work (this version
+    // of API only uses StakeholderSchema)
+    followers: [mongoose.ObjectId],
+    following: [mongoose.ObjectId],
 });
 
 const PersonalSchema = new mongoose.Schema({

@@ -5,7 +5,10 @@ const express = require('express');
 const router = express.Router();
 const { checkToken } = require('../middleware/token');
 const { checkTermsAcceptance } = require('../middleware/terms');
-const homeController = require('../controllers/home');
+const {
+    getHomeFeed,
+    postHomePage,
+} = require('../controllers/home');
 
 const apiVersion = process.env.API_VERSION || 'v1';
 
@@ -16,9 +19,10 @@ router.get(
         checkToken, 
         checkTermsAcceptance
     ],
-    homeController.getHomePage
+    getHomeFeed
 );
 
+/*
 // POST `/api/${apiVersion}/home`
 router.post(
     `/api/${apiVersion}/home`, 
@@ -26,8 +30,9 @@ router.post(
         checkToken, 
         checkTermsAcceptance
     ],
-    homeController.postHomePage
+    postHomePage
 );
+*/
 
 module.exports = router;
 
