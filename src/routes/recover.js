@@ -8,6 +8,7 @@ const {
     verifyToken,
     resetPassword
 } = require("../controllers/recover");
+const { validateUserInput } = require("../middleware/validation");
 const { checkToken } = require("../middleware/token");
 
 const apiVersion = process.env.API_VERSION || 'v1';
@@ -16,24 +17,30 @@ const apiVersion = process.env.API_VERSION || 'v1';
 // Password recovery request route
 router.post(
     `/api/${apiVersion}/recover`, 
-    checkToken
-    recoverController.getRecoveryToken
+    [
+        checkToken,
+        validateUserInput,
+    ],
+    getRecoveryToken
 );
 
 // GET `/api/${apiVersion}/recover/:token`
 // Password reset route with token verification
 router.get(
     `/api/${apiVersion}/recover/:token`, 
-    checkToken
-    recoverController.verifyToken
+    checkToken,
+    verifyToken
 );
 
 // POST `/api/${apiVersion}/recover/:token`
 // Password reset form submission route
 router.post(
     `/api/${apiVersion}/recover/:token`, 
-    checkToken
-    recoverController.resetPassword
+    [
+        checkToken,
+        validateUserInput,
+    ],
+    resetPassword
 );
 
 module.exports = router;

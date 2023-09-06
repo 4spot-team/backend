@@ -1,26 +1,17 @@
 require('dotenv').config();
 
 const express = require('express');
-const { validationResult } = require('express-validator');
 
-const router = express.Router();
-const {
-    usernameValidation,
-    emailValidation,
-    passwordValidation,
-} = require('../middleware/validation');
+const { validateUserInput } = require('../middleware/validation');
 const { register } = require('../controllers/signup');
 
 const apiVersion = process.env.API_VERSION || 'v1';
+const router = express.Router();
 
 // POST `/api/${apiVersion}/register`
 router.post(
     `/api/${apiVersion}/register`, 
-    [
-        usernameValidation, 
-        emailValidation,
-        passwordValidation
-    ], 
+    validateUserInput, 
     async (req, res) => {
 
         // Check for validation errors from the Express Validator middleware
