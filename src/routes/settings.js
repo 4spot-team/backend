@@ -3,20 +3,33 @@ require('dotenv').config();
 const express = require("express");
 
 const router = express.Router();
-const settingsController = require("../controllers/settings");
+const {
+    getSettings,
+    modifySettings
+} = require("../controllers/settings");
+const { checkToken } = require("../middleware/token");
+const { checkTermsAcceptance } = require("../middleware/terms");
 
 const apiVersion = process.env.API_VERSION || 'v1';
 
 // GET `/api/${apiVersion}/settings`
 router.get(
     `/api/${apiVersion}/settings`, 
-    settingsController.getSettingsPage
+    [
+        checkToken,
+        checkTermsAcceptance
+    ],
+    getSettings
 );
 
 // POST `/api/${apiVersion}/settings`
 router.post(
     `/api/${apiVersion}/settings`, 
-    settingsController.modifySettings
+    [
+        checkToken,
+        checkTermsAcceptance
+    ],
+    modifySettings
 );
 
 module.exports = router;

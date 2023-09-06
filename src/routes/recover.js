@@ -3,7 +3,12 @@ require('dotenv').config();
 const express = require("express");
 
 const router = express.Router();
-const recoveryController = require("../controllers/recover");
+const {
+    getRecoveryController,
+    verifyToken,
+    resetPassword
+} = require("../controllers/recover");
+const { checkToken } = require("../middleware/token");
 
 const apiVersion = process.env.API_VERSION || 'v1';
 
@@ -11,6 +16,7 @@ const apiVersion = process.env.API_VERSION || 'v1';
 // Password recovery request route
 router.post(
     `/api/${apiVersion}/recover`, 
+    checkToken
     recoverController.getRecoveryToken
 );
 
@@ -18,6 +24,7 @@ router.post(
 // Password reset route with token verification
 router.get(
     `/api/${apiVersion}/recover/:token`, 
+    checkToken
     recoverController.verifyToken
 );
 
@@ -25,6 +32,7 @@ router.get(
 // Password reset form submission route
 router.post(
     `/api/${apiVersion}/recover/:token`, 
+    checkToken
     recoverController.resetPassword
 );
 
