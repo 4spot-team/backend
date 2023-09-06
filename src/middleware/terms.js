@@ -1,6 +1,6 @@
 const Stakeholder = require("../models/stakeholder");
 
-async function checkAcceptance(req, res, next) {
+async function checkTermsAcceptance(req, res, next) {
     try {
         const { username } = req;
 
@@ -25,6 +25,6 @@ async function checkAcceptance(req, res, next) {
 }
 
 module.exports({
-    checkAcceptance,
+    checkTermsAcceptance,
 });
 
