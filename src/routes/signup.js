@@ -13,9 +13,9 @@ const { register } = require('../controllers/signup');
 
 const apiVersion = process.env.API_VERSION || 'v1';
 
-// POST '/api/${apiVersion}/register'
+// POST `/api/${apiVersion}/register`
 router.post(
-    '/api/${apiVersion}/register', 
+    `/api/${apiVersion}/register`, 
     [
         usernameValidation, 
         emailValidation,

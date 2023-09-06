@@ -7,9 +7,9 @@ const privacyController = require("../controllers/privacy");
 
 const apiVersion = process.env.API_VERSION || 'v1';
 
-// POST '/api/${apiVersion}/privacy'
+// POST `/api/${apiVersion}/privacy`
 router.post(
-   '/api/${apiVersion}/privacy',
+    `/api/${apiVersion}/privacy`,
     privacyController.acceptTerms
 );
 

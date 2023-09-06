@@ -8,16 +8,16 @@ const homeController = require('../controllers/home');
 
 const apiVersion = process.env.API_VERSION || 'v1';
 
-// GET '/api/${apiVersion}/home'
+// GET `/api/${apiVersion}/home`
 router.get(
-    '/api/${apiVersion}/home', 
+    `/api/${apiVersion}/home`, 
     checkToken, 
     homeController.getHomePage
 );
 
-// POST '/api/${apiVersion}/home'
+// POST `/api/${apiVersion}/home`
 router.post(
-    '/api/${apiVersion}/home', 
+    `/api/${apiVersion}/home`, 
     checkToken, 
     homeController.postHomePage
 );

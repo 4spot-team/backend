@@ -7,15 +7,15 @@ const eventController = require("../controllers/events");
 
 const apiVersion = process.env.API_VERSION || 'v1';
 
-// GET '/api/${apiVersion}/events/:eventCode'
+// GET `/api/${apiVersion}/events/:eventCode`
 router.get(
-    "/api/${apiVersion}/events/:eventCode", 
+    `/api/${apiVersion}/events/:eventCode`, 
     eventController.getEventPage
 );
 
-// POST '/api/${apiVersion}/events/:eventCode'
+// POST `/api/${apiVersion}/events/:eventCode`
 router.post(
-    "/api/${apiVersion}/events/:eventCode", 
+    `/api/${apiVersion}/events/:eventCode`, 
     eventController.postEventPage
 );
 

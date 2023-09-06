@@ -9,9 +9,9 @@ const { checkToken } = require('../middleware/token');
 
 const apiVersion = process.env.API_VERSION || 'v1';
 
-// POST '/api/${apiVersion}/login'
+// POST `/api/${apiVersion}/login`
 router.post(
-    '/api/${apiVersion}/login',
+    `/api/${apiVersion}/login`,
     [
         body('username').isString().notEmpty(),
         body('password').isString().notEmpty(),
