@@ -1,5 +1,5 @@
 // GET '/settings'
-const getSettingsPage = (req, res, next) => {
+const getSettings = (req, res, next) => {
     // TODO this is a placeholder
     res.json({"message": "GET settings page"});
 };
@@ -11,6 +11,6 @@ const modifySettings = (req, res, next) => {
 };
 
 module.exports = {
-    getSettingsPage,
+    getSettings,
     modifySettings
 };
