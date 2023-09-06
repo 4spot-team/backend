@@ -24,6 +24,7 @@ const StakeholderSchema = new mongoose.Schema({
     notifications: [mongoose.ObjectId]      // Notification
     */
     hashPass: {type: String, required: true },
+    hasAcceptedTerms: {type: Boolean, default: false},
 });
 
 
