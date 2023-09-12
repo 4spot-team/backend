@@ -24,7 +24,7 @@ async function checkTermsAcceptance(req, res, next) {
     }
 }
 
-module.exports({
+module.exports = {
     checkTermsAcceptance,
-});
+};
 

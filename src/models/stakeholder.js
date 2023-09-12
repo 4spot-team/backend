@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 
+/*
 const creditMethods = require('./creditMethods');
 const notification = require('./notification');
 const blockState = require('./blockState');
 const eventModels = require('./event');
 const ticket = require('./ticket');
+*/
 
 // Used for inheritance
 const options = { discriminatorKey: 'kind' };
@@ -13,7 +15,8 @@ const options = { discriminatorKey: 'kind' };
 const StakeholderSchema = new mongoose.Schema({
     username: { type: String, required: true },
     email: { type: String, required: true },
-    notifications: [mongoose.ObjectId]
+    // TODO temporarily removed
+    // notifications: [mongoose.ObjectId],
     hashPass: {type: String, required: true },
     hasAcceptedTerms: {type: Boolean, default: false},
     // the next ones should be fields of the inherited schemas
@@ -23,6 +26,7 @@ const StakeholderSchema = new mongoose.Schema({
     following: [mongoose.ObjectId],
 });
 
+/*
 const PersonalSchema = new mongoose.Schema({
     dateOfBirth: Date,
     preferences: [mongoose.ObjectId],    // SuperEventType
@@ -57,13 +61,23 @@ const SupervisorSchema = new mongoose.Schema({
     },
     options
 );
+*/
 
 
 const Stakeholder = mongoose.model('Stakeholder', StakeholderSchema);
+/*
+ * TODO temporarily removed
 const Supervisor = Stakeholder.discriminator('Supervisor', StakeholderSchema);
 const Personal = Stakeholder.discriminator('Personal', PersonalSchema);
 const Business = Stakeholder.discriminator('Business', BusinessSchema);
+*/
 
 
-module.exports = { Stakeholder, Supervisor, Personal, Business };
+module.exports = { 
+    Stakeholder, 
+    // TODO temporarily removed
+    // Supervisor, 
+    // Personal, 
+    // Business 
+};
 

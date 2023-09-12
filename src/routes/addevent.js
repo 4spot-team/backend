@@ -2,12 +2,12 @@ require('dotenv').config();
 
 const express = require("express");
 
-const router = express.Router();
 const { fillEvent } = require("../controllers/addevent");
 const { checkToken } = require("../middleware/token");
-const { checkTermsAcceptance } = require("../middleware/token");
+const { checkTermsAcceptance } = require("../middleware/terms");
 
 const apiVersion = process.env.API_VERSION || 'v1';
+const router = express.Router();
 
 // POST `/api/${apiVersion}/addevent`
 router.post(

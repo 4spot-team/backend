@@ -1,4 +1,4 @@
-const { Event } = require("../models/events");
+const { Event } = require("../models/event");
 const { Stakeholder } = require("../models/stakeholder");
 
 
@@ -14,7 +14,8 @@ async function getHomeFeed(req, res) {
         // TODO evaluate a score for each event and sort them using this value
         // get list of events created by users in following list
         const events = await Event.find({ organiser: { $in: following } }
-            .limit(10);  // limit number to 10 elements
+            .limit(10)  // limit number to 10 elements
+        );  
 
         const response = {
             success: true,
