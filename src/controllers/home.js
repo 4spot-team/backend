@@ -52,10 +52,26 @@ async function filterEventsByQuery(req, res) {
             title: { $regex: new RegExp(query, 'i') },
         }).limit(10);
 
+        // TODO evaluate user score value
+        // get list of users whose username matches the query provided in the POST request
+        const users = await Stakeholder.find({
+            // TODO find a way to filter out the username of the current user
+            username: { $regex: new RegExp(query, 'i') },
+        }).limit(10);
+
+        // TODO evaluate event score value (as in the GET request controller)
+        // get list of any event whose title matches the query (even if not organized by a followed user)
+        const generalEvents = await Event.find({
+            // TODO find a way to filter out events organized by the current user
+            title: { $regex: new Regexp(query, 'i') },
+        }).limit(10);
+
         const response = {
             success: true,
             message: 'Home filtered feed retrieved successfully',
             events: events,
+            users: users,
+            generalEvents: generalEvents,
         };
 
         return res.status(200).json(response);
