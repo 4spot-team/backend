@@ -5,13 +5,21 @@ const { validationResult } = require('express-validator');
 
 const { validateUserInput } = require('../middleware/validation');
 const { register } = require('../controllers/signup');
+const { setGlobalHeaders } = require('../middleware/headers');
 
 const apiVersion = process.env.API_VERSION || 'v1';
 const router = express.Router();
 
+// OPTIONS `/api/${apiVersion}/register`
+router.options(
+    `/api/${apiVersion}/register`,
+    setGlobalHeaders
+);
+
 // POST `/api/${apiVersion}/register`
 router.post(
     `/api/${apiVersion}/register`, 
+    setGlobalHeaders,
     validateUserInput, 
     async (req, res) => {
 

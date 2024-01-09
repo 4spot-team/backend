@@ -2,7 +2,6 @@ require("dotenv").config();
 const express = require('express');
 const mongoose = require("mongoose");
 const errorHandler = require('./middleware/errorHandler');
-const cors = require('cors');
 
 const homeRoute = require("./routes/home");
 const loginRoute = require("./routes/login");
@@ -46,18 +45,14 @@ app.use('/', eventRoute);
 // Error Handling Middleware
 app.use(errorHandler);
 
-// Enable Cross Site Resource Sharing only with Frontend
-/* const origin = 'http://' + process.env.FRONTEND_HOST + ':' + process.env.FRONTEND_PORT + '/'; */
-const origin = '*';
-app.use(cors());
-
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Webserver listening on port ${PORT}...`);
 });
 
+const origin = "http://" + process.env.FRONTEND_HOST + ':' + process.env.FRONTEND_PORT + '/';
+
 console.log("App started");
 console.log("DB_HOST:", process.env.DB_HOST);
 console.log("DB_USER:", process.env.DB_USER);
-console.log("Frontend origin:", origin);
 
