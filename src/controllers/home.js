@@ -8,7 +8,7 @@ async function getHomeFeed(req, res) {
         // Provided by checkToken middleware function
         const { username } = req;
 
-        const user = await Stakeholder.findOne(username);
+        const user = await Stakeholder.findOne({ username });
         const following = user.following;  // this is a list of ObjectIds
 
         // TODO evaluate a score for each event and sort them using this value

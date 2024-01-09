@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const Stakeholder = require('../models/stakeholder');
+const { Stakeholder } = require('../models/stakeholder');
 const { generateToken } = require('../middleware/token');
 
 const SALT_ROUNDS = 10;

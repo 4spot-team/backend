@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const { validationResult } = require('express-validator');
 
 const { validateUserInput } = require('../middleware/validation');
 const { register } = require('../controllers/signup');
@@ -25,7 +26,8 @@ router.post(
             const registrationResult = await register(req, res);
 
             // Return the response provided by the controller
-            return res.status(registrationResult.status).json(registrationResult);
+            /* return res.status(registrationResult.status).json(registrationResult); */
+            return res;
 
         } catch (error) {
             console.error(error);

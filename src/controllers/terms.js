@@ -1,4 +1,4 @@
-const Stakeholder = require("../models/stakeholder");
+const { Stakeholder } = require("../models/stakeholder");
 
 
 // POST /accept-terms

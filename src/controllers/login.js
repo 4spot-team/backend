@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const Stakeholder = require('../models/stakeholder');
+const { Stakeholder } = require('../models/stakeholder');
 const { validationResult } = require('express-validator');
 const { generateToken } = require('../middleware/token');
 
