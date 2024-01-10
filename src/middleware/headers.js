@@ -5,7 +5,7 @@ function setGlobalHeaders(req, res, next) {
 
     try {
         res.setHeader("Access-Control-Allow-Origin", "*");
-        res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, HEAD');
         res.setHeader("Access-Control-Allow-Headers", "*");
         next();
     }   

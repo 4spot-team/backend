@@ -27,7 +27,11 @@ async function login(req, res) {
         const token = generateToken(username);
 
         // Send the token in the response
-        res.status(200).json({ message: 'Authentication successful', token });
+        res.status(200).json({ 
+            success: true,
+            message: 'Authentication successful', 
+            token: token
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Authentication failed' });

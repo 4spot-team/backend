@@ -30,10 +30,14 @@ async function register(req, res) {
         await newStakeholder.save();
 
         // Generate an access token for the newly registered user using token management middleware
-        const accessToken = await generateToken(newStakeholder._id);
+        const accessToken = generateToken(username);
 
         // Send the access token in the response
-        res.status(201).json({ message: 'User registered successfully', accessToken });
+        res.status(201).json({ 
+            success: true,
+            message: 'User registered successfully', 
+            token: accessToken 
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Registration failed' });

@@ -4,16 +4,22 @@ async function checkTermsAcceptance(req, res, next) {
     try {
         const { username } = req;
 
+        console.log('USERNAME:', username);
+
         const user = await Stakeholder.findOne({ username });
 
         if (!user) {
-            return res.status(404)
-                      .json({ message: "User not found" });
+            return res.status(404).json({ 
+                success: false,
+                message: "User not found" 
+            });
         }
 
         if (!user.hasAcceptedTerms) {
-            return res.status(403)
-                      .json({ message: "You must accept terms and conditions" });
+            return res.status(403).json({ 
+                success: false,
+                message: "You must accept terms and conditions" 
+            });
         }
 
         next();

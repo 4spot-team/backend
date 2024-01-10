@@ -22,19 +22,24 @@ function checkToken(req, res, next) {
     const token = req.headers.authorization || req.query.token;
 
     if(!token) {
-        return res.status(401)
-                  .json({ message: "Authentication token missing" });
+        return res.status(401).json({ 
+            success: false,
+            message: "Authentication token missing" }
+        );
     }
 
     jwt.verify(token, secretKey, (err, decoded) => {
         if(err) {
-            return res.status(401).json({ message: "Invalid token" });
+            return res.status(401).json({
+                success: false, 
+                message: "Invalid token"
+            });
         }
 
         req.username = decoded.sub;
-
-        next();
+        console.log('Username:', req.username);
     });
+    next();
 }
 
 module.exports = {

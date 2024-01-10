@@ -13,9 +13,7 @@ async function getHomeFeed(req, res) {
 
         // TODO evaluate a score for each event and sort them using this value
         // get list of events created by users in following list
-        const events = await Event.find({ organiser: { $in: following } }
-            .limit(10)  // limit number to 10 elements
-        );  
+        const events = await Event.find({ organiser: { $in: following } }).limit(10);  // limit number to 10 elements  
 
         const response = {
             success: true,
@@ -40,7 +38,7 @@ async function filterEventsByQuery(req, res) {
         // Provided by checkToken middleware function
         const { username } = req;
 
-        const user = await Stakeholder.findOne(username);
+        const user = await Stakeholder.findOne({username});
         const following = user.following;
 
         // TODO evaluate event score value (as in the GET request controller)
@@ -63,7 +61,7 @@ async function filterEventsByQuery(req, res) {
         // get list of any event whose title matches the query (even if not organized by a followed user)
         const generalEvents = await Event.find({
             // TODO find a way to filter out events organized by the current user
-            title: { $regex: new Regexp(query, 'i') },
+            title: { $regex: new RegExp(query, 'i') },
         }).limit(10);
 
         const response = {
