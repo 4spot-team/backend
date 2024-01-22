@@ -33,6 +33,8 @@ async function validateUserInput(req, res, next) {
     const route = req.path;
     const baseRoute = `/api/${apiVersion}`;
 
+    console.log(route.startsWith(`${baseRoute}/recover/`))
+
     // Define validation rules based on the route
     let validationRules = [];
     if (route === `${baseRoute}/register`) {

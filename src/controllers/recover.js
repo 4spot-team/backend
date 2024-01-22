@@ -4,8 +4,10 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const sgMail = require('@sendgrid/mail');
 
-const Stakeholder = require('../models/stakeholder');
+const { Stakeholder } = require('../models/stakeholder');
 const RecoveryToken = require('../models/recoveryToken');
+
+const apiVersion = process.env.API_VERSION || 'v1';
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const SALT_ROUNDS = 10;
@@ -17,7 +19,7 @@ function generateRandomToken() {
 
 // Send a password reset mail
 async function sendRecoveryEmail(user, token) {
-    const resetLink = `https://4spot.com/recover/${token}`;
+    const resetLink = `http://localhost:${process.env.PORT}/api/${apiVersion}/recover/${token}`;
 
     const msg = {
         from: process.env.SENDER_MAIL,
@@ -40,13 +42,17 @@ async function getRecoveryToken(req, res) {
     // Get a recoveryToken by email
 
     const { email } = req.body;
+    console.log(email);
 
     try {
         // Check if the user with the provided email exists
         const existingUser = await Stakeholder.findOne({ email });
 
         if (!existingUser) {
-            return res.status(400).json({ message: 'User does not exist' });
+            return res.status(400).json({ 
+                success: false,
+                message: 'User does not exist' 
+            });
         }
 
         // Generate a random recovery token
@@ -64,39 +70,58 @@ async function getRecoveryToken(req, res) {
         // Send the recovery email with the token
         await sendRecoveryEmail(existingUser, recoveryToken);
 
-        res.status(200).json({ message: 'Recovery email sent successfully' });
+        res.status(200).json({ 
+            success: true,
+            message: 'Recovery email sent successfully' 
+        });
     } catch (error) {
         console.error('Error recovering password:', error);
-        res.status(500).json({ message: 'Recovery failed' });
+        res.status(500).json({ 
+            success: false,
+            message: 'Recovery failed' 
+        });
     }
 }
 
-// POST '/reset/:token' controller
+// POST '/recover/:token' controller
 async function resetPassword(req, res) {
     // Reset password, providing recoveryToken
 
     const { token } = req.params;
-    const { newPassword } = req.body;
+    const { password } = req.body;
+
+    const newPassword = password;
+
+    console.log(newPassword);   // DEBUG
 
     try {
         // Find the recovery token in the database
         const recoveryTokenDoc = await RecoveryToken.findOne({ token });
 
         if (!recoveryTokenDoc) {
-            return res.status(400).json({ message: 'Invalid or expired token' });
+            return res.status(400).json({ 
+                success: false,
+                message: 'Invalid or expired token' 
+            });
         }
 
         // Check if the token has expired
         const currentTime = new Date();
         if (recoveryTokenDoc.expiresAt < currentTime) {
-            return res.status(400).json({ message: 'Token has expired' });
+            return res.status(400).json({ 
+                success: false,
+                message: 'Token has expired' 
+            });
         }
 
         // Find the associated user
         const existingUser = await Stakeholder.findById(recoveryTokenDoc.user);
 
         if (!existingUser) {
-            return res.status(400).json({ message: 'User not found' });
+            return res.status(400).json({ 
+                success: false,
+                message: 'User not found' 
+            });
         }
 
         // Hash and update the user's password
@@ -105,18 +130,24 @@ async function resetPassword(req, res) {
         await existingUser.save();
 
         // Delete the used recovery token
-        await recoveryTokenDoc.remove();
+        await RecoveryToken.deleteOne({ token: recoveryTokenDoc.token });
 
-        res.status(200).json({ message: 'Password reset successfully' });
+        res.status(200).json({ 
+            success: true,
+            message: 'Password reset successfully' 
+        });
     } catch (error) {
         console.error('Error resetting password:', error);
-        res.status(500).json({ message: 'Password reset failed' });
+        res.status(500).json({ 
+            success: false,
+            message: 'Password reset failed' 
+        });
     }
 }
 
-// GET '/verify/:token' controller
+// GET '/recover/:token' controller
 async function verifyToken(req, res) {
-    // Verify if token is valid
+    // Verify if token is valid 
 
     const { token } = req.params;
 
@@ -125,19 +156,32 @@ async function verifyToken(req, res) {
         const recoveryTokenDoc = await RecoveryToken.findOne({ token });
 
         if (!recoveryTokenDoc) {
-            return res.status(400).json({ message: 'Invalid or expired token' });
+            return res.status(400).json({ 
+                success: false,
+                message: 'Invalid or expired token' 
+            });
         }
 
         // Check if the token has expired
         const currentTime = new Date();
         if (recoveryTokenDoc.expiresAt < currentTime) {
-            return res.status(400).json({ message: 'Token has expired' });
+            return res.status(400).json({ 
+                success: false,
+                message: 'Token has expired' 
+            });
         }
 
-        res.status(200).json({ message: 'Token is valid' });
+        res.redirect(
+            'http://' + process.env.FRONTEND_HOST + ':' +
+            process.env.FRONTEND_PORT + '/passwordchange/' + 
+            recoveryTokenDoc.token
+        );
     } catch (error) {
         console.error('Error verifying token:', error);
-        res.status(500).json({ message: 'Token verification failed' });
+        res.status(500).json({ 
+            success: false,
+            message: 'Token verification failed' 
+        });
     }
 }
 
