@@ -5,8 +5,9 @@ const creditMethods = require('./creditMethods');
 const notification = require('./notification');
 const blockState = require('./blockState');
 const eventModels = require('./event');
-const ticket = require('./ticket');
 */
+
+const ticket = require('./ticket');
 
 // Used for inheritance
 const options = { discriminatorKey: 'kind' };
@@ -21,9 +22,10 @@ const StakeholderSchema = new mongoose.Schema({
     hasAcceptedTerms: {type: Boolean, default: false},
     // the next ones should be fields of the inherited schemas
     // they are here only to make things work (this version
-    // of API only uses StakeholderSchema)
+    // of API uses only StakeholderSchema)
     followers: [mongoose.ObjectId],
     following: [mongoose.ObjectId],
+    tickets: [ticket.TicketSchema],
 });
 
 /*
