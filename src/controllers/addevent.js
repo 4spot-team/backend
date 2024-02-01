@@ -1,5 +1,19 @@
+const crypto = require("crypto");
+
 const { Event } = require("../models/event");
 const { Stakeholder } = require("../models/stakeholder");
+
+// Combines title and organiser (which together are the unique key attribute of
+// an event) into a SHA-256 base64-encoded hash, which is used as a unique code 
+// identifier
+function generateEventCode(title, organiser) {
+    const combinedString = title + organiser;
+
+    const hash = crypto.createHash("sha-256").update(combinedString).digest();
+    const b64Hash = hash.toString("base64");
+
+    return b64Hash;
+}
 
 
 // POST '/addevent'
@@ -57,9 +71,12 @@ async function fillEvent(req, res, next) {
             });
         }
 
+        const eventCode = generateEventCode(title, username);
+
         const newEvent = new Event({
             title,
             organiser: user,
+            code: eventCode,
             types,
             location,
             date,

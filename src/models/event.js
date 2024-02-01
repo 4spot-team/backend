@@ -16,6 +16,7 @@ const options = { discriminatorKey: 'kind' };
 const EventSchema = new mongoose.Schema({
     title: { type: String, required: true },
     organiser: { type: mongoose.ObjectId, required: true },  // User
+    code: { type: String, required: true },
     tickets: [mongoose.ObjectId],                            // Ticket
     types: { type: [mongoose.ObjectId], required: true },      // EventType
     location: { type: location.LocationSchema, required: true },
