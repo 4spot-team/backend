@@ -7,11 +7,21 @@ const eventController = require("../controllers/events");
 const { checkToken } = require("../middleware/token");
 const { checkTermsAcceptance } = require("../middleware/terms");
 
+const { setGlobalHeaders } = require("../middleware/headers");
+
 const apiVersion = process.env.API_VERSION || 'v1';
+
+// OPTIONS `/api/${apiVersion}/events/:eventCode`
+router.options(
+    `/api/${apiVersion}/events/:eventCode`,
+    setGlobalHeaders
+);
+
 
 // GET `/api/${apiVersion}/events/:eventCode`
 router.get(
     `/api/${apiVersion}/events/:eventCode`, 
+    setGlobalHeaders,
     [
         checkToken,
         checkTermsAcceptance
@@ -21,6 +31,7 @@ router.get(
 
 // POST `/api/${apiVersion}/events/:eventCode`
 router.post(
+    setGlobalHeaders,
     `/api/${apiVersion}/events/:eventCode`, 
     [
         checkToken,
