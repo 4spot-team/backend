@@ -34,6 +34,8 @@ function isStringArray(array) {
 }
 
 
+
+
 // POST '/addevent'
 async function fillEvent(req, res, next) {
     try {
@@ -346,7 +348,7 @@ async function fillEvent(req, res, next) {
 
         // Check if there is another Event with the same key fields
         const oldEvent = await Event.findOne({ title, organiser: user });
-        if (oldEvent) {
+        if (typeof oldEvent !== "undefined") {
             return res.status(400).json({
                 success: false,
                 message: "User has already published an Event with the same title",
