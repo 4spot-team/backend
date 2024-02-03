@@ -6,6 +6,19 @@ const { Ticket } = require("../models/ticket");
 
 var base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
 
+// Generate a new ticket for an event, save it to db and return objectId
+async function generateTicket(userId, eventId, checked, visibility) {
+    const newTicket = new Ticket({
+        user: userId,
+        event: eventId,
+        checked, 
+        visibility,
+    });
+
+    await newTicket.save();
+
+    return newTicket._id;
+}
 
 // GET '/api/${apiVersion}/events/:eventCode'
 async function getEventPage(req, res) {
@@ -184,25 +197,23 @@ async function postEventPage(req, res) {
                         if (subscribe) {
                             if (event.occupiedSpots < event.numOfSpots) {
                                 const oldTicket = await Ticket.findOne({ user, event });
-                                if (oldTicket) {
+                                if (typeof oldTicket !== "undefined") {
                                     return res.status(400).json({
                                         success: false,
                                         message: "User is already subscribed for this event",
                                     });
                                 } else {
-                                    const newTicket = new Ticket({
-                                        user,
-                                        event,
-                                        checked: false,
-                                        visibility: user.settings.ticketVisibility,
-                                    });
-
-                                    await newTicket.save();
+                                    const ticketId = generateTicket(
+                                        user._id,
+                                        event._id,
+                                        false,
+                                        user.settings.ticketVisibility,
+                                    );
 
                                     event.occupiedSpots += 1;
-                                    await event.save();
-                                    event.tickets.add(newTicket);
-                                    user.tickets.add(newTicket);
+
+                                    event.tickets.add(ticketId);
+                                    user.tickets.add(ticketId);
                                 }
                                 
                             } else {
@@ -214,12 +225,32 @@ async function postEventPage(req, res) {
 
                         } else {
                             const oldTicket = await Ticket.findOne({ user, event });
-                            if (oldTicket) {
-                                await Ticket.deleteOne({ user, event });
+                            if (typeof oldTicket !== "undefined") {
+                                const eventTicketIndex = event.tickets.indexOf(
+                                    oldTicket._id
+                                );
+                                const userTicketIndex = user.tickets.indexOf(
+                                    oldTicket._id
+                                );
 
-                                event.occupiedSpots -= 1;
-                                event.tickets.remove(oldTicket);
-                                user.tickets.remove(oldTicket);
+                                if (eventTicketIndex > -1 &&
+                                    userTicketIndex > -1) {
+
+                                    await Ticket.deleteOne({ user, event });
+                                    event.occupiedSpots -= 1;
+                                    event.tickets.splice(
+                                        eventTicketIndex, 1
+                                    );
+                                    user.tickets.splice(
+                                        userTicketIndex, 1
+                                    );
+                                } else {
+                                    return res.status(500).json({
+                                        // DB user and event info do not match tickets
+                                        message: "Internal Server Error"
+                                    });
+                                }
+
                             } else {
                                 return res.status(400).json({
                                     success: false,
@@ -232,6 +263,7 @@ async function postEventPage(req, res) {
             }
 
             await event.save();
+            await user.save();
 
             return res.status(200).json({
                 success: true,
