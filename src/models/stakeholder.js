@@ -7,7 +7,7 @@ const blockState = require('./blockState');
 const eventModels = require('./event');
 */
 
-const ticket = require('./ticket');
+const settings = require('./settings');
 
 // Used for inheritance
 const options = { discriminatorKey: 'kind' };
@@ -23,9 +23,10 @@ const StakeholderSchema = new mongoose.Schema({
     // the next ones should be fields of the inherited schemas
     // they are here only to make things work (this version
     // of API uses only StakeholderSchema)
-    followers: [mongoose.ObjectId],
-    following: [mongoose.ObjectId],
-    tickets: [ticket.TicketSchema],
+    followers: [mongoose.ObjectId],  // Stakeholder
+    following: [mongoose.ObjectId],  // Stakeholder
+    tickets: [mongoose.ObjectId],  // Ticket
+    settings: {type: settings.SettingsSchema, required: true},
 });
 
 /*
