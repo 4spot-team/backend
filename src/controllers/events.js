@@ -12,6 +12,14 @@ async function getEventPage(req, res) {
     try {
         const { eventCode } = req.params;
 
+        if !(typeof eventCode === "string" ||
+            eventCode instanceof String) {
+            return res.status(400).json({
+                success: false,
+                message: "'eventCode' in request params is not a string",
+            });
+        }
+
         if !(base64regex.test(eventCode)) {
             return res.status(400).json({
                 success: false,
@@ -21,10 +29,21 @@ async function getEventPage(req, res) {
 
         const event = await Event.findOne({ code: eventCode });
 
-        if (event) {
+        if (typeof event !== "undefined") {
             return res.status(200).json({
                 success: true,
                 message: 'Event retrieved successfully",
+
+                await event
+                    .populate('organiser')
+                    .populate('tickets')
+                    .populate({
+                        path: 'types',
+                        populate: { path: 'superType' }
+                    })
+                    // .populate('messagingGroup')
+                    .exec();
+
                 event: event,
             });
         } else {
@@ -45,6 +64,14 @@ async function postEventPage(req, res) {
     try {
         const { eventCode } = req.params;
 
+        if !(typeof eventCode === "string" ||
+            eventCode instanceof String) {
+            return res.status(400).json({
+                success: false,
+                message: "'eventCode' in request params is not a string",
+            });
+        }
+
         if !(base64regex.test(eventCode)) {
             return res.status(400).json({
                 success: false,
@@ -54,12 +81,12 @@ async function postEventPage(req, res) {
 
         const event = await Event.findOne({ code: eventCode });
 
-        if (event) {
+        if (typeof event !== "undefined") {
             // Provided by checkToken middleware
             const { username } = req;
             const user = await Stakeholder.findOne({ username });
 
-            if (user == event.organiser) {
+            if (user._id == event.organiser) {
                 
                 const { numOfSpots, comment } = req.body;
 
