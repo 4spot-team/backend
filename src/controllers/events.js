@@ -126,15 +126,11 @@ async function postEventPage(req, res) {
                     
                     // TODO external input not sanitized
 
-                    const newComment = new Comment({
+                    event.comments.add({
                         user,
                         date: Date.now(),
                         text: comment,
                     });
-                    
-                    await newComment.save();
-
-                    event.comments.add(newComment);
                 }
 
 
@@ -152,15 +148,11 @@ async function postEventPage(req, res) {
 
                     // TODO external input not sanitized
 
-                    const newComment = new Comment({
+                    event.comments.add({
                         user,
                         date: Date.now(),
                         text: comment,
                     });
-                    
-                    await newComment.save();
-
-                    event.comments.add(newComment);
 
                 } else if (typeof rating !== "undefined") {
 
@@ -170,22 +162,18 @@ async function postEventPage(req, res) {
                             message: "Provided rating is not a number",
                         });
                     }
-
                     if (rating < 0 || rating > 5) {
                         return res.status(400).json({
                             success:false,
                             message: "Rating is out of bounds",
                         });
-
                     }
-                    const newRating = new Rating({
+
+                    event.ratings.add({
                         user,
                         rating,
                     });
 
-                    await newRating.save();
-
-                    event.ratings.add(newRating);
                 } else if (typeof subscribe !== "undefined") {
                     if (typeof subscribe !== "boolean") {
                         return res.status(400).json({
@@ -212,6 +200,7 @@ async function postEventPage(req, res) {
                                     await newTicket.save();
 
                                     event.occupiedSpots += 1;
+                                    await event.save();
                                     event.tickets.add(newTicket);
                                     user.tickets.add(newTicket);
                                 }
@@ -239,7 +228,10 @@ async function postEventPage(req, res) {
                             }
                         }
                     }
+                }
             }
+
+            await event.save();
 
             return res.status(200).json({
                 success: true,
