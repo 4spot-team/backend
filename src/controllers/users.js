@@ -71,15 +71,15 @@ async function postUserPage(req, res) {
             });
         }
 
-        if user != paramUser {
+        if user._id != paramUser._id {
             // POST to other user page, othrewise no operation available
 
             const { follow } = req.body;  // boolean
             if (typeof follow !== "undefined") {
                 if (typeof follow === "boolean") {
                     if (follow) {
-                        currentUser.following.push(paramUser);
-                        paramUser.followers.push(currentUser);
+                        user.following.push(paramUser._id);
+                        paramUser.followers.push(user._id);
                     } else {
                         const firstIndex = user.following.indexOf(paramUser);
                         const secondIndex = paramUser.followers.indexOf(currentUser);
@@ -116,6 +116,9 @@ async function postUserPage(req, res) {
             }
             return res.status(400).json(response);
         }
+
+        await user.save();
+        await paramUser.save();
         
         const response = {
             success: true,
