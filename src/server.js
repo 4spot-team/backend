@@ -14,6 +14,7 @@ const settingsRoute = require("./routes/settings");
 const recoveryRoute = require("./routes/recover");
 const usersRoute = require("./routes/users");
 const eventRoute = require("./routes/events");
+const mapRoute = require("./routes/map");
 
 
 // Initialize Express app
@@ -44,6 +45,7 @@ app.use('/', settingsRoute);
 app.use('/', recoveryRoute);
 app.use('/', usersRoute);
 app.use('/', eventRoute);
+app.use('/', mapRoute);
 
 console.log()
 

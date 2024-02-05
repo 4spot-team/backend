@@ -10,7 +10,8 @@ const LocationSchema = new mongoose.Schema({
     state: { type: String, required: true },
     city: { type: String, required: true },
     address: { type: String, required: true },
-    houseNumber: { type: Number, required: true }
+    houseNumber: { type: Number, required: true },
+    coordinates: { type: Array, required: true },
 });
 
 
