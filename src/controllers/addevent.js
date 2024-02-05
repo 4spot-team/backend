@@ -33,7 +33,35 @@ function isStringArray(array) {
     return true;
 }
 
+// Uses Nominatim OpenstreetMap Public API to convert a string address into a 
+// couple of coordinates
+async function fetchLocationData(locationString) {
+    try {
+        const res = await fetch(
+            `https://nominatim.openstreetmap.org/search?q=${locationString}&format=json&addressdetails=1&limit=1&polygon_svg=1`,
+            { method: 'GET' }
+        );
+        
+        const dataList = await res.json();
+        const data = dataList[0];
 
+        if (typeof data !== "undefined" && 
+            typeof data.lat !== "undefined" && 
+            typeof data.lon !== "undefined") {
+
+            const lat = parseFloat(data.lat);
+            const lon = parseFloat(data.lon);
+            
+            return { lat, lon };
+        } else {
+            console.error('No latitude and longitude data found.');
+            return { lat: -1, lon: -1 };
+        }
+    } catch (error) {
+        console.error('Error fetching location data:', error);
+        return { lat: -1, lon: -1 };
+    }
+}
 
 
 // POST '/addevent'
@@ -389,6 +417,21 @@ async function fillEvent(req, res, next) {
             typesDocs.add(eventTypeDoc._id);
         }
 
+        const locationString = 
+            location.address + ', ' + 
+            location.houseNumber + ', ' +  
+            location.city + ', ' +
+            location.postalCode + ', ' +
+            location.state;
+                            
+        const { lat, long } = fetchLocationData(locationString);
+        if (lat == -1 || long == -1) {
+            return res.status(400).json({
+                success: false,
+                message: "Could not find specified address",
+            });
+        }
+
         // Creating Event with required fields
         const newEvent = new Event({
             title,
@@ -400,6 +443,8 @@ async function fillEvent(req, res, next) {
                 state: location.state,
                 city: location.city,
                 address: location.address,
+                houseNumber: location.houseNumber,
+                coordinates: [lat, long],
             },
             date: dateObj,
             noUnderage,
