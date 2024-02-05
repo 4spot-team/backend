@@ -71,7 +71,7 @@ async function postUserPage(req, res) {
             });
         }
 
-        if user._id != paramUser._id {
+        if (user._id != paramUser._id) {
             // POST to other user page, othrewise no operation available
 
             const { follow } = req.body;  // boolean
@@ -111,7 +111,7 @@ async function postUserPage(req, res) {
             }
         } else {
             const response = {
-                success = false,
+                success: false,
                 message: 'No POST for self user page',
             }
             return res.status(400).json(response);

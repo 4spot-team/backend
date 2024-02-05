@@ -3,6 +3,7 @@ const crypto = require("crypto");
 const { Event } = require("../models/event");
 const { Stakeholder } = require("../models/stakeholder");
 const { EventType, SuperEventType } = require("../models/eventType");
+const { events } = require("../models/recoveryToken");
 
 const iso8601Regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
 const base64Regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
@@ -13,7 +14,7 @@ const base64Regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}
 function generateEventCode(title, organiser) {
     const combinedString = title + organiser;
 
-    const hash = crypto.createHash("sha-256").update(combinedString).digest();
+    const hash = crypto.createHash("sha256").update(combinedString).digest();
     const b64Hash = hash.toString("base64");
 
     return b64Hash;
@@ -26,7 +27,7 @@ function isStringArray(array) {
     }
 
     for (const s in array) {
-        if !(typeof s === 'string' || s instanceof String) {
+        if (!(typeof s === 'string' || s instanceof String)) {
             return false;
         }
     }
@@ -42,7 +43,7 @@ async function fillEvent(req, res, next) {
         // Provided by checkToken middleware function
         const { username } = req;
 
-        const { eventData } = req.body;  // JSON with Event info
+        const eventData = req.body;  // JSON with Event info
 
         const {
             // Required fields
@@ -59,6 +60,7 @@ async function fillEvent(req, res, next) {
             hashtags,
             description,
             numOfSpots,
+            price
         } = eventData;
 
         // Check if required fields have been submitted
@@ -83,7 +85,7 @@ async function fillEvent(req, res, next) {
         // TODO price is not checked to have a real existing currency
 
         // Checking title
-        if !(typeof title === "string" || title instanceof String) {
+        if (!(typeof title === "string" || title instanceof String)) {
             return res.status(400).json({
                 success:false,
                 message:"Provided 'title' field is not a string",
@@ -92,78 +94,99 @@ async function fillEvent(req, res, next) {
 
         // TODO types is actually an array, fix code
         // Checking 'types'
-        if !(Array.isArray(types)) {
+        if (!(Array.isArray(types))) {
             return res.status(400).json({
                 success: false,
                 message: "Provided 'types' field is not an array",
             });
         } else {
-            for (const eventType in types) {
-                if !(typeof eventType === "object") {
+            for (let i=0; i<events.length; i++) {
+                const eventType = events[i];
+                console.log('TYPES: ' + JSON.stringify(types));
+                if (!(typeof eventType === "object")) {
+                    console.log('TYPE: ' + typeof eventType);
+                    console.log('TYPE: ' + JSON.stringify(eventType));
                     return res.status(400).json({
                         success: false,
                         message: "Provided 'types' field contains element(s) that are not an object",
                     });
                 } else {
                     // Checking required fields
-                    if ((typeof eventType.name === "undefined") ||
-                        (typeof eventType.defaultImage === "undefined")) {
+                    if ((typeof eventType.name === "undefined") /* ||
+                        (typeof eventType.defaultImage === "undefined") */) {
                             return res.status(400).json({
                                 success: false,
                                 message: "Submitted 'types' field contains elements that lack required fields",
                         });
                     }
             
-                    if !(typeof eventType.name === "string" || 
-                        eventType.name instanceof String) {
+                    if (!(typeof eventType.name === "string" || 
+                        eventType.name instanceof String)) {
                         return res.status(400).json({
                             success:false,
                             message:"Provided 'types' field contains elements whose 'name' field is not a string",
                         });
                     }
 
-                    if !(typeof eventType.defaultImage === "string" ||
+                    // NO! The images are saved in the DB and the same for everyone
+                    /* if (!(typeof eventType.defaultImage === "string" ||
                         eventType.defaultImage instanceof String ||
-                        base64Regex.test(eventType.defaultImage)) {
+                        base64Regex.test(eventType.defaultImage))) {
                         return res.status(400).json({
                             success:false,
                             message:"Submitted 'types' fields contains elements whose 'defaultImage' is not a base64-encoded image",
                         });
-                    }
+                    } */
 
                     // Checking optional fields, if provided
-                    if (typeof eventType.superType !== "undefined") {
-                        if !((typeof eventType.superType.name === "undefined") ||
-                            (typeof eventType.superType.icon === "undefined")) {
+                    /* if (typeof eventType.superType !== "undefined") {
+                        if (!((typeof eventType.superType.name === "undefined") ||
+                            (typeof eventType.superType.icon === "undefined"))) {
                             return res.status(400).json({
                                 success:false,
                                 message:"Provided 'types' field contains elements whose 'superType' object lacks required fields",
                             });
                         }
 
-                        if !(typeof eventType.superType.name === "string" ||
-                            eventType.superType.name instanceof String) {
+                        if (!(typeof eventType.superType.name === "string" ||
+                            eventType.superType.name instanceof String)) {
                             return res.status(400).json({
                                 success:false,
                                 message:"Provided 'types' field contains elements whose 'superType' object contains a 'name' field which is not a string",
                             });
                         }
 
-                        if !(typeof eventType.superType.icon === "string" ||
+                        if (!(typeof eventType.superType.icon === "string" ||
                             eventType.superType.icon instanceof String ||
-                            base64Regex.test(eventType.superType.icon)) {
+                            base64Regex.test(eventType.superType.icon))) {
                             return res.status(400).json({
                                 success: false,
                                 message: "Provided 'types' field contains elements whose 'superType' object contains a 'icon' field which is not a base64-encoded image",
                             });
                         }
+                    } */
+
+                    // REDO superType
+                    if (typeof eventType.superType === "undefined") {
+                            return res.status(400).json({
+                                success: false,
+                                message: "Submitted 'types' field contains elements that lack required fields",
+                        });
+                    }
+            
+                    if (!(typeof eventType.superType === "string" || 
+                        eventType.name instanceof String)) {
+                        return res.status(400).json({
+                            success:false,
+                            message:"Provided 'types' field contains elements whose 'name' field is not a string",
+                        });
                     }
                 }
             }
         }
 
         // Checking 'location'
-        if !(typeof location === "object") {
+        if (!(typeof location === "object")) {
             return res.status(400).json({
                 success:false,
                 message: "Provided 'location' field is not an object",
@@ -181,32 +204,32 @@ async function fillEvent(req, res, next) {
                     message: "Provided 'location' object lacks required fields",
                 });
             } else {
-                if !(typeof location.postalCode === "string" ||
-                    location.postalCode instanceof String) {
+                if (!(typeof location.postalCode === "string" ||
+                    location.postalCode instanceof String)) {
 
                     return res.status(400).json({
                         success:false,
                         message:"Provided 'location.postalCode' field is not a string",
                     });
                 }
-                if !(typeof location.state === "string" ||
-                    location.state instanceof String) {
+                if (!(typeof location.state === "string" ||
+                    location.state instanceof String)) {
 
                     return res.status(400).json({
                         success:false,
                         message:"Provided 'location.state' field is not a string",
                     });
                 }
-                if !(typeof location.city === "string" ||
-                    location.city instanceof String) {
+                if (!(typeof location.city === "string" ||
+                    location.city instanceof String)) {
 
                     return res.status(400).json({
                         success:false,
                         message:"Provided 'location.city' field is not a string",
                     });
                 }               
-                if !(typeof location.address === "string" ||
-                    location.address instanceof String) {
+                if (!(typeof location.address === "string" ||
+                    location.address instanceof String)) {
 
                     return res.status(400).json({
                         success:false,
@@ -225,8 +248,8 @@ async function fillEvent(req, res, next) {
 
         // Checking date
         let dateObj;
-        if !(typeof date === "string" || date instanceof String ||
-            iso8601Regex.test(date)) {
+        if (!(typeof date === "string" || date instanceof String ||
+            iso8601Regex.test(date))) {
 
             return res.status(400).json({
                 success: false,
@@ -246,7 +269,7 @@ async function fillEvent(req, res, next) {
         }
         
         // Checking noUnderAge
-        if !(typeof noUnderage === "boolean") {
+        if (!(typeof noUnderage === "boolean")) {
             return res.status(400).json({
                 success:false,
                 message: "Provided 'noUnderage' field is not a boolean",
@@ -254,7 +277,7 @@ async function fillEvent(req, res, next) {
         }
 
         // Checking hasQR
-        if !(typeof hasQR === "boolean") {
+        if (!(typeof hasQR === "boolean")) {
             return res.status(400).json({
                 success:false,
                 message: "Provided 'hasQR' field is not a boolean",
@@ -262,8 +285,8 @@ async function fillEvent(req, res, next) {
         }
 
         // Checking image
-        if !(typeof image === "string" || image instanceof String ||
-            base64Regex.test(image)) {
+        if (!(typeof image === "string" || image instanceof String ||
+            base64Regex.test(image))) {
 
             return res.status(400).json({
                 success:false,
@@ -293,19 +316,19 @@ async function fillEvent(req, res, next) {
                         message: "Provided price.amount field is negative",
                     });
                 }
-                if !(typeof price.currency === "string" ||
-                    price.currency instanceof String) {
+                if (!(typeof price.currency === "string" ||
+                    price.currency instanceof String)) {
                     return res.status(400).json({
                         success: false,
                         message: "Provided price.currency field is not a string",
-                    )};
+                    });
                 }
             }
         }
 
         // Checking hastags
         if (typeof hashtags !== "undefined") {
-            if (!isStringArray(hastags)) {
+            if (!isStringArray(hashtags)) {
                 return res.status(400).json({
                     success: false,
                     message: "Provided 'hastags' field is not an array of strings (only)",
@@ -315,8 +338,8 @@ async function fillEvent(req, res, next) {
 
         // Checking description
         if (typeof description !== "undefined") {
-            if !(typeof description === "string" ||
-                description instanceof String) {
+            if (!(typeof description === "string" ||
+                description instanceof String)) {
                 return res.status(400).json({
                     success: false,
                     message: "Provided 'description' field is not a string",
@@ -326,17 +349,17 @@ async function fillEvent(req, res, next) {
 
         // Checking numOfSpots
         if (typeof numOfSpots !== "undefined") {
-            if (isNaN(numOfSpots) {
+            if (isNaN(numOfSpots)) {
                 return res.status(400).json({
                     success: false,
                     message: "Provided 'numOfSpots' field is not a number",
-                }
+                });
             } else if (numOfSpots < 0) {
                 return res.status(400).json({
                     success: false,
                     message: "Provided 'numOfSpots' field is negative",
                 });
-            } else if !(Number.isInteger(numOfSpots)) {
+            } else if (!(Number.isInteger(numOfSpots))) {
                 return res.status(400).json({
                     success: false,
                     message: "Provided 'numOfSpots' field is not an integer",
@@ -348,7 +371,7 @@ async function fillEvent(req, res, next) {
 
         // Check if there is another Event with the same key fields
         const oldEvent = await Event.findOne({ title, organiser: user });
-        if (typeof oldEvent !== "undefined") {
+        if (oldEvent !== null) {
             return res.status(400).json({
                 success: false,
                 message: "User has already published an Event with the same title",
@@ -358,19 +381,20 @@ async function fillEvent(req, res, next) {
         const eventCode = generateEventCode(title, username);
 
         let typesDocs = [];
-        for (const eventType in types) {
+        for (let i=0; i<types.length; i++) {
+            const eventType = types[i];
             let eventTypeDoc = await EventType.findOne({ 
                 name: eventType.name 
             });
 
-            if (typeof eventTypeDoc === "undefined") {
+            /* if (typeof eventTypeDoc === "undefined") {
                 // Create new EventType
                 eventTypeDoc = new EventType({
                     name: eventType.name,
                     defaultImage: eventType.defaultImage,
                 });
 
-                if !(typeof eventType.superType === "undefined") {
+                if (!(typeof eventType.superType === "undefined")) {
                     let superEventTypeDoc = await SuperEventType
                         .findOne({ name: eventType.superType.name });
 
@@ -385,8 +409,10 @@ async function fillEvent(req, res, next) {
                     eventTypeDoc.superType = superTypeDoc._id;
                 }
                 await eventTypeDoc.save();
+            } */
+            if (eventTypeDoc !== null) {
+                typesDocs.add(eventTypeDoc._id);
             }
-            typesDocs.add(eventTypeDoc._id);
         }
 
         // Creating Event with required fields
@@ -400,6 +426,7 @@ async function fillEvent(req, res, next) {
                 state: location.state,
                 city: location.city,
                 address: location.address,
+                houseNumber: location.houseNumber
             },
             date: dateObj,
             noUnderage,
@@ -420,6 +447,12 @@ async function fillEvent(req, res, next) {
                 currency: price.currency,
             };
         }
+        /* else {
+            newEvent.price = {
+                amount: 0,
+                currency: "",
+            };
+        } */
 
         if (typeof hashtags !== "undefined") {
             newEvent.hashtags = hashtags;
@@ -459,7 +492,8 @@ async function fillEvent(req, res, next) {
         // Populating the document with references to other documents before 
         // sending response. In case a field to be populated has not been 
         // instantiated (because optional), it will remain undefined or null
-        await newEvent
+        await Event
+            .findOne({ code: newEvent.code })
             .populate("organiser")
             .populate("tickets")
             .populate({
@@ -484,4 +518,3 @@ async function fillEvent(req, res, next) {
 module.exports = {
     fillEvent
 };
-

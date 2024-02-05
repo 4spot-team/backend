@@ -31,8 +31,8 @@ router.get(
 
 // POST `/api/${apiVersion}/events/:eventCode`
 router.post(
-    setGlobalHeaders,
     `/api/${apiVersion}/events/:eventCode`, 
+    setGlobalHeaders,
     [
         checkToken,
         checkTermsAcceptance

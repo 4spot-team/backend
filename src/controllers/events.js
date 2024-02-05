@@ -25,15 +25,15 @@ async function getEventPage(req, res) {
     try {
         const { eventCode } = req.params;
 
-        if !(typeof eventCode === "string" ||
-            eventCode instanceof String) {
+        if (!(typeof eventCode === "string" ||
+            eventCode instanceof String)) {
             return res.status(400).json({
                 success: false,
                 message: "'eventCode' in request params is not a string",
             });
         }
 
-        if !(base64regex.test(eventCode)) {
+        if (!(base64regex.test(eventCode))) {
             return res.status(400).json({
                 success: false,
                 message: "'eventCode' in request params is not recognized",
@@ -43,11 +43,7 @@ async function getEventPage(req, res) {
         const event = await Event.findOne({ code: eventCode });
 
         if (typeof event !== "undefined") {
-            return res.status(200).json({
-                success: true,
-                message: 'Event retrieved successfully",
-
-                await event
+            await event
                     .populate('organiser')
                     .populate('tickets')
                     .populate({
@@ -56,6 +52,10 @@ async function getEventPage(req, res) {
                     })
                     // .populate('messagingGroup')
                     .exec();
+                    
+            return res.status(200).json({
+                success: true,
+                message: 'Event retrieved successfully',
 
                 event: event,
             });
@@ -77,15 +77,15 @@ async function postEventPage(req, res) {
     try {
         const { eventCode } = req.params;
 
-        if !(typeof eventCode === "string" ||
-            eventCode instanceof String) {
+        if (!(typeof eventCode === "string" ||
+            eventCode instanceof String)) {
             return res.status(400).json({
                 success: false,
                 message: "'eventCode' in request params is not a string",
             });
         }
 
-        if !(base64regex.test(eventCode)) {
+        if (!(base64regex.test(eventCode))) {
             return res.status(400).json({
                 success: false,
                 message: "'eventCode' in request params is not recognized",
@@ -130,7 +130,7 @@ async function postEventPage(req, res) {
                     }
 
                 } else if (typeof comment !== "undefined") {
-                    if !(typeof comment === "string" || comment instanceof String) {
+                    if (!(typeof comment === "string" || comment instanceof String)) {
                         return res.status(400).json({
                             success:false,
                             message: "Provided comment is not a string",
@@ -152,7 +152,7 @@ async function postEventPage(req, res) {
                 const { comment, rating, subscribe } = req.body;
 
                 if (typeof comment !== "undefined") {
-                    if !(typeof comment === "string" || comment instanceof String) {
+                    if (!(typeof comment === "string" || comment instanceof String)) {
                         return res.status(400).json({
                             success:false,
                             message: "Provided comment is not a string",
@@ -169,7 +169,7 @@ async function postEventPage(req, res) {
 
                 } else if (typeof rating !== "undefined") {
 
-                    if (isNaN(rating) {
+                    if (isNaN(rating)) {
                         return res.status(400).json({
                             success: false,
                             message: "Provided rating is not a number",

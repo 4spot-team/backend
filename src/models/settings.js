@@ -8,4 +8,5 @@ const Settings = mongoose.model('Settings', SettingsSchema);
 
 module.exports = {
     Settings,
+    SettingsSchema
 };

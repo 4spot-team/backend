@@ -1,6 +1,8 @@
 require("dotenv").config();
 const express = require('express');
 const mongoose = require("mongoose");
+const bodyParser = require('body-parser');
+
 const errorHandler = require('./middleware/errorHandler');
 
 const homeRoute = require("./routes/home");
@@ -28,8 +30,9 @@ dbConnection.on("error", err => console.error(`Connection error ${err}`));
 dbConnection.once("open", () => console.log("DB Connected"));
 
 // Middleware
-app.use(express.json()); // Parse JSON requests
-app.use(express.urlencoded({ extended: false })); // Parse URL-encoded requests
+// Permit transfering of big files (images)
+app.use(bodyParser.json({limit: '200mb'}));
+app.use(bodyParser.urlencoded({ limit: '200mb', extended: false }));
 
 // Route Registration
 app.use('/', homeRoute);
@@ -41,6 +44,8 @@ app.use('/', settingsRoute);
 app.use('/', recoveryRoute);
 app.use('/', usersRoute);
 app.use('/', eventRoute);
+
+console.log()
 
 // Error Handling Middleware
 app.use(errorHandler);
