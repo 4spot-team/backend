@@ -2,7 +2,8 @@ const { Event } = require("../models/event");
 const { Stakeholder } = require("../models/stakeholder");
 
 async function populateEventFields(item, index, arr) {
-    await arr[index]
+    await Event
+        .findById(arr[index]._id)
         .populate('organiser')
         .populate('tickets')
         .populate({
@@ -30,7 +31,8 @@ async function getUserPage(req, res) {
 
         const events = await Event.find({ organiser: user });
 
-        await user
+        await Stakeholder
+            .findOne({username: user.username})
             .populate('followers', 'username')
             .populate('following', 'username')
             .exec();

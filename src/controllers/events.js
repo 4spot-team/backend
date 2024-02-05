@@ -43,16 +43,17 @@ async function getEventPage(req, res) {
         const event = await Event.findOne({ code: eventCode });
 
         if (typeof event !== "undefined") {
-            await event
-                    .populate('organiser')
-                    .populate('tickets')
-                    .populate({
-                        path: 'types',
-                        populate: { path: 'superType' }
-                    })
-                    // .populate('messagingGroup')
-                    .exec();
-                    
+            await Event
+                .findOne({_id: event._id})
+                .populate('organiser')
+                .populate('tickets')
+                .populate({
+                    path: 'types',
+                    populate: { path: 'superType' }
+                })
+                // .populate('messagingGroup')
+                .exec();
+
             return res.status(200).json({
                 success: true,
                 message: 'Event retrieved successfully',
