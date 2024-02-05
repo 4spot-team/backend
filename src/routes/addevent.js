@@ -11,9 +11,9 @@ const { setGlobalHeaders } = require("../middleware/headers");
 const apiVersion = process.env.API_VERSION || 'v1';
 const router = express.Router();
 
-// OPTIONS `/api/${apiVersion}/users/:username`
+// OPTIONS `/api/${apiVersion}/addevent`
 router.options(
-    `/api/${apiVersion}/users/:username`,
+    `/api/${apiVersion}/addevent`,
     setGlobalHeaders
 );
 
