@@ -6,7 +6,7 @@ async function eventsMap(req, res) {
     try {
         const {
             start_lat,
-            start_long;,
+            start_long,
             end_lat,
             end_long,
         } = req.body;
@@ -64,3 +64,7 @@ async function eventsMap(req, res) {
         });
     }
 }
+
+module.exports = {
+    eventsMap
+};

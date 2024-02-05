@@ -438,7 +438,7 @@ async function fillEvent(req, res, next) {
                 }
                 await eventTypeDoc.save();
             }
-        }
+        }*/
 
         const locationString = 
             location.address + ', ' + 
@@ -466,7 +466,6 @@ async function fillEvent(req, res, next) {
                 state: location.state,
                 city: location.city,
                 address: location.address,
-                houseNumber: location.houseNumber
                 houseNumber: location.houseNumber,
                 coordinates: [lat, long],
             },
@@ -550,7 +549,7 @@ async function fillEvent(req, res, next) {
             message: 'Event published successfully',
             event: newEvent,
         });
-
+        }
     } catch(error) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error" });
