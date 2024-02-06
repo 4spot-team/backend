@@ -5,11 +5,14 @@ const { Event } = require("../models/event");
 async function eventsMap(req, res) {
     try {
         const {
-            start_lat,
-            start_long,
-            end_lat,
-            end_long,
+            lat,
+            lng
         } = req.body;
+
+        const start_lat = lat[0];
+        const end_lat = lat[1];
+        const start_long = lng[0];
+        const end_long = lng[1];
 
         if (typeof start_lat === "undefined" ||
             typeof start_long === "undefined" || 
@@ -45,9 +48,10 @@ async function eventsMap(req, res) {
         // TODO Limit is fixed here but should be calculated in base of range
         }).limit(25);
 
-        for (event in events) {
-            event.populate('ratings').exec();
-            await event.save();
+        for (let i=0; i<events.length; i++) {
+            Event.findOne({_id: events[i]._id})
+            .populate('ratings').exec();
+            await events[i].save();
         }
 
         return res.status(200).json({

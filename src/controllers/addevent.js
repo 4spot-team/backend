@@ -36,15 +36,28 @@ function isStringArray(array) {
 
 // Uses Nominatim OpenstreetMap Public API to convert a string address into a 
 // couple of coordinates
-async function fetchLocationData(locationString) {
+async function fetchLocationData(postalCode, country, city, street) {
+    console.log('Postal code: ' + postalCode);
+    console.log('Country: ' + country);
+    console.log('City: ' + city);
+    console.log('Street: ' + street);
     try {
         const res = await fetch(
-            `https://nominatim.openstreetmap.org/search?q=${locationString}&format=json&addressdetails=1&limit=1&polygon_svg=1`,
+            `https://nominatim.openstreetmap.org/search?` + 
+            `postalCode=${postalCode}&` + 
+            `country=${country}&` + 
+            `city=${city}&` +
+            `street=${street}&` +
+            `&format=json&addressdetails=1&limit=1&polygon_svg=1`,
             { method: 'GET' }
         );
         
         const dataList = await res.json();
         const data = dataList[0];
+
+        console.log('Res: ' + res);
+        console.log('DataList: ' + dataList);
+        console.log('Data: ' + data.lat + " " + data.lon);
 
         if (typeof data !== "undefined" && 
             typeof data.lat !== "undefined" && 
@@ -52,7 +65,7 @@ async function fetchLocationData(locationString) {
 
             const lat = parseFloat(data.lat);
             const lon = parseFloat(data.lon);
-            
+
             return { lat, lon };
         } else {
             console.error('No latitude and longitude data found.');
@@ -447,8 +460,13 @@ async function fillEvent(req, res, next) {
             location.postalCode + ', ' +
             location.state;
                             
-        const { lat, long } = fetchLocationData(locationString);
-        if (lat == -1 || long == -1) {
+        const { lat, lon } = await fetchLocationData(
+            location.postalCode,
+            location.state,
+            location.city,
+            location.houseNumber.toString() + " " + location.address
+        );
+        if (lat == -1 || lon == -1) {
             return res.status(400).json({
                 success: false,
                 message: "Could not find specified address",
@@ -467,7 +485,7 @@ async function fillEvent(req, res, next) {
                 city: location.city,
                 address: location.address,
                 houseNumber: location.houseNumber,
-                coordinates: [lat, long],
+                coordinates: [lat, lon],
             },
             date: dateObj,
             noUnderage,

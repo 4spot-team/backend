@@ -13,7 +13,8 @@ async function getHomeFeed(req, res) {
 
         // TODO evaluate a score for each event and sort them using this value
         // get list of events created by users in following list
-        const events = await Event.find({ organiser: { $in: following } }).limit(10);  // limit number to 10 elements  
+        /* const events = await Event.find({ organiser: { $in: following } }).limit(10);  // limit number to 10 elements   */
+        const events = await Event.find().limit(10);
 
         const response = {
             success: true,

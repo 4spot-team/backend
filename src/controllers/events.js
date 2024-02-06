@@ -198,7 +198,7 @@ async function postEventPage(req, res) {
                         if (subscribe) {
                             if (event.occupiedSpots < event.numOfSpots) {
                                 const oldTicket = await Ticket.findOne({ user, event });
-                                if (typeof oldTicket !== "undefined") {
+                                if (oldTicket !== null) {
                                     return res.status(400).json({
                                         success: false,
                                         message: "User is already subscribed for this event",
