@@ -24,6 +24,12 @@ async function register(req, res) {
             username,
             email,
             hashPass: hashedPassword,
+            followers: [],
+            following: [],
+            tickets: [],
+            settings: {
+                ticketVisibility: "Everyone",
+            }
         });
 
         // Save the stakeholder document to the database
