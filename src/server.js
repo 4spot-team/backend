@@ -53,7 +53,7 @@ console.log()
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Webserver listening on port ${PORT}...`);
 });
 
@@ -63,3 +63,4 @@ console.log("App started");
 console.log("DB_HOST:", process.env.DB_HOST);
 console.log("DB_USER:", process.env.DB_USER);
 
+module.exports = { app, server };
