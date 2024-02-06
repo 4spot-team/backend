@@ -140,7 +140,7 @@ async function postEventPage(req, res) {
                     
                     // TODO external input not sanitized
 
-                    event.comments.add({
+                    event.comments.push({
                         user,
                         date: Date.now(),
                         text: comment,
@@ -162,7 +162,7 @@ async function postEventPage(req, res) {
 
                     // TODO external input not sanitized
 
-                    event.comments.add({
+                    event.comments.push({
                         user,
                         date: Date.now(),
                         text: comment,
@@ -183,7 +183,7 @@ async function postEventPage(req, res) {
                         });
                     }
 
-                    event.ratings.add({
+                    event.ratings.push({
                         user,
                         rating,
                     });
@@ -213,8 +213,8 @@ async function postEventPage(req, res) {
 
                                     event.occupiedSpots += 1;
 
-                                    event.tickets.add(ticketId);
-                                    user.tickets.add(ticketId);
+                                    event.tickets.push(ticketId);
+                                    user.tickets.push(ticketId);
                                 }
                                 
                             } else {
