@@ -9,6 +9,15 @@ async function eventsMap(req, res) {
             lng
         } = req.body;
 
+        if (typeof lat === "undefined" ||
+            typeof lng === "undefined") {
+
+            return res.status(400).json({
+                success: false,
+                message: "Required fields missing in request body",
+            });
+        }
+
         const start_lat = lat[0];
         const end_lat = lat[1];
         const start_long = lng[0];
@@ -21,7 +30,7 @@ async function eventsMap(req, res) {
 
             return res.status(400).json({
                 success: false,
-                message: "Required fields missing in request body",
+                message: "Provided fields are not ranges",
             });
         }
 
@@ -33,6 +42,21 @@ async function eventsMap(req, res) {
             return res.status(400).json({
                 success: false,
                 message: "Required fields have wrong type",
+            });
+        }
+
+        if (start_lat > end_lat || start_long > end_long) {
+            return res.status(400).json({
+                success: false,
+                message: "Provided ranges are inconsistent",
+            });
+        }
+
+        if (start_lat < -90. || start_long < -180. ||
+            end_lat > 90. || end_long > 180.) {
+            return res.status(400).json({
+                success: false,
+                message: "Provided ranges are out of bounds",
             });
         }
 
