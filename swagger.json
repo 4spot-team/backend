@@ -21,7 +21,7 @@
         }
       }
     },
-    "/login": {
+    "/api/v1/login": {
       "post": {
         "summary": "Login to the application",
         "requestBody": {
@@ -55,7 +55,7 @@
         }
       }
     },
-    "/signup": {
+    "/api/v1/register": {
       "post": {
         "summary": "Register a new user",
         "requestBody": {
@@ -92,7 +92,7 @@
         }
       }
     },
-    "/accept-terms": {
+    "/api/v1/accept-terms": {
       "post": {
         "summary": "Accept terms of service",
         "responses": {
@@ -108,7 +108,7 @@
         }
       }
     },
-    "/recover": {
+    "/api/v1/recover": {
       "post": {
         "summary": "Request password recovery",
         "requestBody": {
@@ -139,7 +139,7 @@
         }
       }
     },
-    "/recover/{token}": {
+    "/api/v1/recover/{token}": {
       "post": {
         "summary": "Reset password using recovery token",
         "parameters": [
@@ -180,7 +180,7 @@
         }
       }
     },
-    "/users/{username}": {
+    "/api/v1/users/{username}": {
       "get": {
         "summary": "Get user page",
         "parameters": [
@@ -239,7 +239,7 @@
         }
       }
     },
-    "/events/{eventCode}": {
+    "/api/v1/events/{eventCode}": {
       "get": {
         "summary": "Get event page",
         "parameters": [
@@ -262,7 +262,7 @@
         }
       }
     },
-    "/map": {
+    "/api/v1/map": {
       "post": {
         "summary": "Get events based on map coordinates",
         "requestBody": {
