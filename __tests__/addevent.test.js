@@ -15,7 +15,7 @@ async function getToken() {
     return res.body.token;
 }
 
-describe('POST /api/v1/map', () => {
+describe('POST /api/v1/addevent', () => {
     var token;
 
     beforeAll( async () => { 
@@ -39,7 +39,7 @@ describe('POST /api/v1/map', () => {
 
     test('POST /api/v1/addevent TEST valid input', async () => {
         const res = await request(app)
-            .post("/api/v1/map")
+            .post("/api/v1/addevent")
             .set({
                 'Authorization': token
             })
@@ -63,11 +63,11 @@ describe('POST /api/v1/map', () => {
         expect(res.body.success).toBe(true);
         expect(res.body.message).toBe("Event published successfully");
         expect(res.body.event).toBeDefined();
-    }
+    });
 
     test('POST /api/v1/addevent TEST non-ISO8601 date', async () => {
         const res = await request(app)
-            .post("/api/v1/map")
+            .post("/api/v1/addevent")
             .set({
                 'Authorization': token
             })
@@ -90,11 +90,11 @@ describe('POST /api/v1/map', () => {
         expect(res.status).toBe(400);
         expect(res.body.success).toBe(false);
         expect(res.body.message).toBe("Provided 'date' field is not a ISO8601-encoded date");
-    }
+    });
 
     test('POST /api/v1/addevent TEST non-base64 image', async () => {
         const res = await request(app)
-            .post("/api/v1/map")
+            .post("/api/v1/addevent")
             .set({
                 'Authorization': token
             })
@@ -117,11 +117,11 @@ describe('POST /api/v1/map', () => {
         expect(res.status).toBe(400);
         expect(res.body.success).toBe(false);
         expect(res.body.message).toBe("Provided 'image' field is not a base64-encoded image");
-    }
+    });
 
     test('POST /api/v1/addevent TEST non-existent location', async () => {
         const res = await request(app)
-            .post("/api/v1/map")
+            .post("/api/v1/addevent")
             .set({
                 'Authorization': token
             })
@@ -144,7 +144,7 @@ describe('POST /api/v1/map', () => {
         expect(res.status).toBe(400);
         expect(res.body.success).toBe(false);
         expect(res.body.message).toBe("Could not find specified address");
-    }
-}
+    });
+});
 
 
