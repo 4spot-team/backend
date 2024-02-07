@@ -3,6 +3,9 @@ const express = require('express');
 const mongoose = require("mongoose");
 const bodyParser = require('body-parser');
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('../swagger.json');
+
 const errorHandler = require('./middleware/errorHandler');
 
 const homeRoute = require("./routes/home");
@@ -51,6 +54,13 @@ console.log()
 
 // Error Handling Middleware
 app.use(errorHandler);
+
+// API docs
+app.use(
+    '/api-docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerDocument)
+);
 
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
