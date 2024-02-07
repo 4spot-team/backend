@@ -92,6 +92,94 @@
         }
       }
     },
+    "/api/v1/home": {
+        "get": {
+            "summary": "Get home feed",
+            "responses": {
+                "200": {
+                    "description": "Home feed retrieved successfully"
+                },
+                "500": {
+                    "description": "Server error"
+                }
+            }
+          },
+        "post": {
+            "summary": "Filter events by query",
+            "requestBody": {
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "query": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "Home filtered feed retrieved successfully"
+                },
+                "500": {
+                    "description": "Server error"
+                }
+            }
+        }
+    },
+    "/api/v1/addevent": {
+        "post": {
+            "summary": "Filter events by query",
+            "requestBody": {
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string"
+                                },
+                                "types": {
+                                    "type": "#/components/schemas/EventType"
+                                },
+                                "location": {
+                                    "type": "#/components/schemas/Location"
+                                },
+                                "date": {
+                                    "type": "Date"
+                                },
+                                "noUnderage": {
+                                    "type": "boolean"
+                                },
+                                "hasQR": {
+                                    "type": "boolean"
+                                },
+                                "image": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "Event published successfully"
+                },
+                "400": {
+                    "description": "Bad request"
+                },
+                "500": {
+                    "description": "Server error"
+                }
+            }
+        }
+    },
     "/api/v1/accept-terms": {
       "post": {
         "summary": "Accept terms of service",
@@ -140,6 +228,30 @@
       }
     },
     "/api/v1/recover/{token}": {
+      "get": {
+        "summary": "Redirect to recovery password change",
+         "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+            "redirect": {
+                "description": "Redirect to frontend password change page"
+            },
+            "400": {
+                "description": "Invalid or expired token"
+            },
+            "500": {
+                "description": "Server error"
+            }
+        }
+      },
       "post": {
         "summary": "Reset password using recovery token",
         "parameters": [
